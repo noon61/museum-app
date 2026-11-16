@@ -4,9 +4,14 @@ export default function StatDocument({ page, marks = [], selectedPoint, onSelect
   const choosePosition = (event) => {
     if (!onSelect) return;
     const rect = event.currentTarget.getBoundingClientRect();
+    const isRotated = Boolean(event.currentTarget.closest(".book-spread.rotated-90"));
+    const screenX = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+    const screenY = Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height));
     onSelect({
-      x: Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width)),
-      y: Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height)),
+      // 見開き全体を時計回りに90度回している場合は、画面座標を
+      // 元画像の座標へ戻してから保存する。
+      x: isRotated ? screenY : screenX,
+      y: isRotated ? 1 - screenX : screenY,
     });
   };
 
