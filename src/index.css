@@ -767,6 +767,14 @@ button {
   background: #fffdf7;
   touch-action: none;
 }
+.ipad-writing-canvas {
+  cursor: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
 .ipad-keyboard-input { padding: 28px; color: var(--museum-black); font: inherit; font-size: 28px; resize: none; }
 .ipad-input-actions { display: flex; justify-content: flex-end; gap: 14px; padding-top: 18px; }
 .ipad-input-actions button { min-height: 58px; padding: 0 30px; border: 0; border-radius: 999px; color: var(--museum-navy); font-weight: 750; background: var(--museum-gray); }

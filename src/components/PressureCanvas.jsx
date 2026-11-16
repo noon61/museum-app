@@ -4,7 +4,6 @@ import {
   useEffect,
   useImperativeHandle,
   useRef,
-  useState,
 } from "react";
 
 const MIN_WIDTH = 2;
@@ -14,7 +13,6 @@ const PressureCanvas = forwardRef(function PressureCanvas({ color, onPressureCha
   const canvasRef = useRef(null);
   const strokesRef = useRef([]);
   const activeStrokeRef = useRef(null);
-  const [drawing, setDrawing] = useState(false);
 
   const getPoint = useCallback((event) => {
     const rect = canvasRef.current.getBoundingClientRect();
@@ -126,7 +124,6 @@ const PressureCanvas = forwardRef(function PressureCanvas({ color, onPressureCha
     const stroke = { color, points: [point] };
     strokesRef.current.push(stroke);
     activeStrokeRef.current = stroke;
-    setDrawing(true);
     onPressureChange(point.pressure);
   };
 
@@ -144,7 +141,6 @@ const PressureCanvas = forwardRef(function PressureCanvas({ color, onPressureCha
 
   const endStroke = () => {
     activeStrokeRef.current = null;
-    setDrawing(false);
     onPressureChange(0);
   };
 
@@ -157,12 +153,17 @@ const PressureCanvas = forwardRef(function PressureCanvas({ color, onPressureCha
       onPointerUp={endStroke}
       onPointerCancel={endStroke}
       onContextMenu={(event) => event.preventDefault()}
+      onSelectStart={(event) => event.preventDefault()}
+      onDragStart={(event) => event.preventDefault()}
       style={{
         display: "block",
         width: "100%",
         height: "100%",
-        cursor: drawing ? "grabbing" : "crosshair",
+        cursor: "none",
         touchAction: "none",
+        userSelect: "none",
+        WebkitUserSelect: "none",
+        WebkitTouchCallout: "none",
       }}
     />
   );
