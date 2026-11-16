@@ -37,7 +37,7 @@ export default function Welcome() {
             marginBottom: "50px",
           }}
         >
-          聞かせて！あなたのアイデア
+          iPadで聞かせて！あなたのアイデア
         </h1>
 
         <p
@@ -49,7 +49,7 @@ export default function Welcome() {
         >
           あなたの答えが、この展示の一部になります。
           <br />
-          気になる問いを選んでください。
+          気になる問いを選んで、手書きで答えてください。
         </p>
 
         <div

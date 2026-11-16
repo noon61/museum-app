@@ -1,162 +1,86 @@
+import { useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { useRef } from "react";
-import { ReactSketchCanvas } from "react-sketch-canvas";
+import PressureCanvas from "../components/PressureCanvas";
+
+const COLORS = ["#ffffff", "#67e8f9", "#f9a8d4", "#fde047", "#a7f3d0"];
+
 export default function Input() {
-    const navigate = useNavigate();
-    const location = useLocation();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const canvasRef = useRef(null);
+  const [color, setColor] = useState(COLORS[0]);
+  const [pressure, setPressure] = useState(0);
+  const [sending, setSending] = useState(false);
+  const question = location.state?.question || "「データ」と聞いて最初に思い浮かぶ言葉は？";
 
-const question =
-  location.state?.question ||
-  "「データ」と聞いて最初に思い浮かぶ言葉は？";
-    const canvasRef = useRef(null);
-    const sendData = async () => {
-  try {
-    // 手書きを画像化
-    const image = await canvasRef.current.exportImage("png");
+  const sendData = async () => {
+    if (canvasRef.current.isEmpty()) {
+      alert("キャンバスに何か描いてください");
+      return;
+    }
 
-    // Firestoreへ保存
-    await addDoc(collection(db,"answers"),{
-    image,
-    question,
-    createdAt:serverTimestamp(),
-});
+    setSending(true);
+    try {
+      const strokes = canvasRef.current.exportStrokes();
+      const points = strokes.flatMap((stroke) => stroke.points);
+      const averagePressure = points.reduce((sum, point) => sum + point.pressure, 0) / points.length;
 
-    // キャンバスを消す
-    canvasRef.current.clearCanvas();
+      await addDoc(collection(db, "answers"), {
+        image: canvasRef.current.exportImage(),
+        strokes,
+        dominantColor: color,
+        averagePressure,
+        question,
+        createdAt: serverTimestamp(),
+      });
 
-// ありがとう画面を少し見せる
-alert("ありがとうございました！\nあなたのアイデアを展示へ追加しました。");
+      canvasRef.current.clearCanvas();
+      alert("ありがとうございました！\nあなたの線から光が生まれました。");
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+      alert("送信に失敗しました。通信状態を確認してください。");
+    } finally {
+      setSending(false);
+    }
+  };
 
-// Welcomeへ戻る
-navigate("/");
-  } catch (err) {
-    console.error(err);
-    alert("送信に失敗しました");
-  }
-};
   return (
-    <div
-      style={{
-        width: "100vw",
-        height: "100vh",
-        background: "#ece6de",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <div
-        style={{
-          width: "85%",
-          maxWidth: "1200px",
-          height: "80%",
-          background: "#ffffff",
-          borderRadius: "45px",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          padding: "50px 70px",
-          boxSizing: "border-box",
-          boxShadow: "0 10px 40px rgba(0,0,0,0.08)",
-        }}
-      >
-        {/* タイトル */}
-        <h1
-          style={{
-            fontSize: "60px",
-            color: "#4A2615",
-            margin: "20",
-            fontWeight: "500",
-          }}
-        >
-          問い
-        </h1>
+    <main className="input-page">
+      <section className="input-panel">
+        <p className="eyebrow">問い</p>
+        <h1>{question}</h1>
 
-        {/* 質問 */}
-        <h2
-  style={{
-    fontSize: "36px",
-    color: "#4A2615",
-    textAlign: "center",
-    marginBottom: "60px",
-  }}
->
-  {question}
-</h2>
+        <div className="drawing-wrap">
+          <PressureCanvas ref={canvasRef} color={color} onPressureChange={setPressure} />
+          <div className="pressure-meter" aria-label={`筆圧 ${Math.round(pressure * 100)}%`}>
+            <span style={{ width: `${pressure * 100}%`, background: color }} />
+          </div>
+        </div>
 
-        {/* 手書きエリア */}
-        <div
-  style={{
-    width: "70%",
-    height: "320px",
-    borderRadius: "35px",
-    overflow: "hidden",
-    background: "#B5AA9E",
-  }}
->
-  <ReactSketchCanvas
-    ref={canvasRef}
-    strokeWidth={4}
-    strokeColor="#ffffff"
-    canvasColor="#B5AA9E"
-    width="100%"
-    height="320px"
-  />
-</div>
+        <div className="palette" aria-label="線の色を選択">
+          {COLORS.map((item) => (
+            <button
+              key={item}
+              type="button"
+              className={item === color ? "color-button selected" : "color-button"}
+              style={{ background: item }}
+              aria-label={`線の色 ${item}`}
+              onClick={() => setColor(item)}
+            />
+          ))}
+        </div>
 
-   <div
-  style={{
-    display: "flex",
-    justifyContent: "space-between",
-    width: "60%",
-    marginTop: "50px",
-  }}
->
-  <button
-    onClick={() => navigate("/")}
-    style={{
-      border: "none",
-      background: "transparent",
-      fontSize: "42px",
-      cursor: "pointer",
-      fontWeight: "600",
-      color: "#7A5A45",
-    }}
-  >
-    ← 戻る
-  </button>
-
-  <button
-    onClick={() => canvasRef.current.clearCanvas()}
-    style={{
-      border: "none",
-      background: "transparent",
-      fontSize: "42px",
-      cursor: "pointer",
-      fontWeight: "600",
-    }}
-  >
-    消す
-  </button>
-
-  <button
-    onClick={sendData}
-    style={{
-      border: "none",
-      background: "transparent",
-      fontSize: "42px",
-      cursor: "pointer",
-      fontWeight: "600",
-      color: "#4A2615",
-    }}
-  >
-    送る
-  </button>
-</div>
-      
-      </div>
-    </div>
+        <div className="input-actions">
+          <button type="button" onClick={() => navigate("/")}>← 戻る</button>
+          <button type="button" onClick={() => canvasRef.current.clearCanvas()}>消す</button>
+          <button type="button" className="send-button" onClick={sendData} disabled={sending}>
+            {sending ? "送信中…" : "光にする →"}
+          </button>
+        </div>
+      </section>
+    </main>
   );
 }
