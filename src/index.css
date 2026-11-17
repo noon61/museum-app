@@ -85,6 +85,48 @@ body {
   border-inline: 0;
 }
 
+#root:has(.admin-page) {
+  width: 100%;
+  max-width: none;
+  border-inline: 0;
+}
+
+.admin-page {
+  display: grid;
+  min-height: 100svh;
+  place-items: center;
+  padding: 24px;
+  box-sizing: border-box;
+  color: #202731;
+  background: #ecebe7;
+}
+.admin-card { width: min(620px, 100%); padding: 32px; border-radius: 28px; box-sizing: border-box; text-align: left; background: #fff; box-shadow: 0 20px 55px rgba(35, 40, 48, .14); }
+.admin-card h1 { margin: 4px 0 0; color: var(--museum-navy); font-size: clamp(30px, 5vw, 44px); font-weight: 750; }
+.admin-kicker { color: var(--museum-gold); font-size: 13px; font-weight: 850; letter-spacing: .15em; }
+.admin-login { width: min(460px, 100%); text-align: center; }
+.admin-login form { display: grid; gap: 12px; margin-top: 28px; }
+.admin-login label { color: #606875; font-size: 13px; }
+.admin-login input { width: 100%; height: 64px; border: 2px solid #cfd3d9; border-radius: 14px; box-sizing: border-box; color: #202731; text-align: center; font-size: 28px; letter-spacing: .35em; background: #fff; }
+.admin-login button,
+.admin-delete-actions button { min-height: 56px; border: 0; border-radius: 14px; color: #fff; font-weight: 800; background: var(--museum-navy); }
+.admin-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+.admin-lock { padding: 8px 14px; border: 1px solid #d4d7dc; border-radius: 999px; color: #626a76; background: #f4f4f2; }
+.admin-current { margin-top: 28px; padding: 20px; border-radius: 18px; background: #f1f2f3; }
+.admin-current span { display: block; color: #747b85; font-size: 12px; }
+.admin-current strong { display: block; margin: 5px 0 2px; color: var(--museum-navy); font-size: 28px; }
+.admin-current p { color: #515965; font-size: 14px; }
+.admin-counts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 16px 0; }
+.admin-counts > div { padding: 18px; border: 1px solid #dedfdc; border-radius: 16px; }
+.admin-counts span { display: block; color: #737b86; font-size: 12px; }
+.admin-counts strong { display: block; margin-top: 5px; color: #202731; font-size: 36px; }
+.admin-counts small { margin-left: 4px; font-size: 13px; }
+.admin-delete-actions { display: grid; gap: 10px; }
+.admin-delete-actions button.danger { background: #b84747; }
+.admin-delete-actions button:disabled { opacity: .4; }
+.admin-message { margin-top: 16px; padding: 12px; border-radius: 10px; color: #176c50; text-align: center; font-weight: 750; background: #e4f4ed; }
+.admin-message.error { color: #9f3737; background: #fae8e8; }
+.admin-warning { margin-top: 14px; color: #8a5353; text-align: center; font-size: 12px; }
+
 h1,
 h2 {
   font-family: var(--heading);

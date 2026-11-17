@@ -9,6 +9,7 @@ import DataExperience from "./pages/DataExperience";
 import AnnotationWall from "./pages/AnnotationWall";
 import WallControl from "./pages/WallControl";
 import MarkPad from "./pages/MarkPad";
+import Admin from "./pages/Admin";
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
         <Route path="/wall" element={<AnnotationWall />} />
         <Route path="/control" element={<WallControl />} />
         <Route path="/ipad" element={<MarkPad />} />
+        <Route path="/admin" element={<Admin />} />
       </Routes>
     </BrowserRouter>
   );
