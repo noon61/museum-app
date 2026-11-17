@@ -25,6 +25,12 @@ export default function MarkPad() {
     }
   }, (error) => console.error("選択位置の受信エラー", error)), []);
 
+  useEffect(() => {
+    if (!sent) return undefined;
+    const timer = window.setTimeout(() => setSent(false), 2500);
+    return () => window.clearTimeout(timer);
+  }, [sent]);
+
   const sendMark = async () => {
     const hasContent = inputType === "keyboard" ? text.trim() : !canvasRef.current?.isEmpty();
     if (!selectedTarget) {
