@@ -22,7 +22,7 @@ export default function StatDocument({ page, marks = [], selectedPoint, onSelect
         {marks.map((mark) => (
           <div
             key={mark.id}
-            className="document-mark"
+            className={`document-mark${mark.x > 0.7 ? " edge-right" : ""}${mark.y < 0.12 ? " edge-top" : ""}${mark.y > 0.82 ? " edge-bottom" : ""}`}
             style={{ left: `${mark.x * 100}%`, top: `${mark.y * 100}%`, "--mark-color": mark.personaColor || "#ef6f73" }}
           >
             <i />
