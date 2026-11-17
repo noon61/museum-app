@@ -1,0 +1,20 @@
+{
+  "name": "気づきの広場 iPad入力",
+  "short_name": "気づきの広場",
+  "description": "気づきの広場のiPad入力画面",
+  "lang": "ja",
+  "start_url": "/ipad",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#ffffff",
+  "theme_color": "#28446e",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
