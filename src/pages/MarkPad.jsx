@@ -75,11 +75,12 @@ export default function MarkPad() {
   return (
     <main className="ipad-input-only">
       <section className="ipad-input-card">
-        {sent ? <div className="ipad-input-message"><strong>付箋を送りました</strong><p>タッチパネルで次の場所を選んでください。</p></div> : <>
+        {sent ? <div className="ipad-input-message"><strong>付箋を送りました</strong><p>タッチパネルで次の場所を選んでください。</p></div> : !selectedTarget ? <div className="ipad-input-message waiting"><strong>タッチパネルで<br />場所を選んでください</strong></div> : <div className="ipad-input-form">
+          <p className="ipad-input-prompt">気づきを記入してください</p>
           <div className="input-type-tabs"><button className={inputType === "handwriting" ? "active" : ""} onClick={() => setInputType("handwriting")}>手書き</button><button className={inputType === "keyboard" ? "active" : ""} onClick={() => setInputType("keyboard")}>キーボード</button></div>
           {inputType === "handwriting" ? <div className="ipad-writing-canvas"><PressureCanvas ref={canvasRef} color="#28446E" onPressureChange={() => {}} /></div> : <textarea className="ipad-keyboard-input" value={text} maxLength={60} autoFocus aria-label="付箋の入力欄" placeholder="文字を入力してください" onChange={(event) => setText(event.target.value)} />}
-          <div className="ipad-input-actions"><button type="button" onClick={() => { canvasRef.current?.clearCanvas(); setText(""); }}>書き直す</button><button type="button" className="send" disabled={!selectedTarget || sending} onClick={sendMark}>{sending ? "送信中…" : selectedTarget ? "付箋を送る" : "場所の選択待ち"}</button></div>
-        </>}
+          <div className="ipad-input-actions"><button type="button" onClick={() => { canvasRef.current?.clearCanvas(); setText(""); }}>書き直す</button><button type="button" className="send" disabled={sending} onClick={sendMark}>{sending ? "送信中…" : "付箋を送る"}</button></div>
+        </div>}
       </section>
     </main>
   );
