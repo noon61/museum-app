@@ -73,7 +73,11 @@ export default function MarkPad() {
   };
 
   return (
-    <main className="ipad-input-only">
+    <main className="ipad-input-only" onContextMenu={(event) => {
+      if (event.target.tagName !== "TEXTAREA") event.preventDefault();
+    }} onSelectStart={(event) => {
+      if (event.target.tagName !== "TEXTAREA") event.preventDefault();
+    }}>
       <section className="ipad-input-card">
         {sent ? <div className="ipad-input-message"><strong>付箋を送りました</strong><p>タッチパネルで次の場所を選んでください。</p></div> : !selectedTarget ? <div className="ipad-input-message waiting"><strong>タッチパネルで<br />場所を選んでください</strong></div> : <div className="ipad-input-form">
           <p className="ipad-input-prompt">気づきを記入してください</p>
