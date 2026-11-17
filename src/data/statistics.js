@@ -11,7 +11,7 @@ export const STAT_DOCUMENTS = [
   },
   {
     id: "fishery",
-    category: "水産業",
+    category: "漁業",
     title: "生売水産物数量",
     personaId: "p004",
     pages: [
@@ -31,7 +31,7 @@ export const STAT_DOCUMENTS = [
   },
   {
     id: "medical",
-    category: "医療",
+    category: "衛生",
     title: "医療施設数及び医療従事者数",
     personaId: "p002",
     pages: [

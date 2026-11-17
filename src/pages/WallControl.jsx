@@ -9,7 +9,6 @@ export default function WallControl() {
   const [documentId, setDocumentId] = useState(STAT_DOCUMENTS[0].id);
   const [pageIndex, setPageIndex] = useState(0);
   const [changing, setChanging] = useState(false);
-  const [zoom, setZoom] = useState(0.75);
   const [rotation, setRotation] = useState(0);
   const [selectedTarget, setSelectedTarget] = useState(null);
   const documentData = getStatDocument(documentId);
@@ -80,8 +79,8 @@ export default function WallControl() {
     </section>
     {documentData.id === "education" && <section className="view-mode-switch"><button className={rotation === 90 ? "active" : ""} onClick={() => changeProjection(documentData.id, pageIndex, rotation === 90 ? 0 : 90)}>↻ 90度回転</button></section>}
     <section className="control-browser">
-      <div className="control-tools"><div><span>{selectedTarget ? "場所を選択しました" : "付箋を置く場所をタップ"}</span><strong>{documentData.title}・p.{pageNumbers}</strong></div><label>縮小 <input type="range" min="0.35" max="1.2" step="0.05" value={zoom} onChange={(event) => setZoom(Number(event.target.value))} /> 拡大</label><button onClick={() => setZoom(0.6)}>表示を戻す</button></div>
-      <div key={documentId} className="control-document-viewport"><div className={`book-spread ${rotation === 90 ? "rotated-90" : ""}`} style={{ width: `${zoom * 2486}px` }}>{documentData.pages.map((item) => <StatDocument key={item.id} page={item} selectedPoint={selectedTarget?.pageId === item.id ? selectedTarget : null} onSelect={(point) => selectTarget(item, point)} />)}</div></div>
+      <div className="control-tools"><div><span>{selectedTarget ? "場所を選択しました" : "付箋を置く場所をタップ"}</span><strong>{documentData.title}・p.{pageNumbers}</strong></div></div>
+      <div key={documentId} className="control-document-viewport"><div className={`book-spread control-fit-spread ${rotation === 90 ? "rotated-90" : ""}`}>{documentData.pages.map((item) => <StatDocument key={item.id} page={item} selectedPoint={selectedTarget?.pageId === item.id ? selectedTarget : null} onSelect={(point) => selectTarget(item, point)} />)}</div></div>
     </section>
   </main>;
 }
