@@ -20,7 +20,7 @@ export default function AnnotationWall() {
   const marks = useMemo(() => annotations.filter((item) => item.kind === "document-mark" && item.documentId === documentData.id && !item.cellId).slice(-60), [annotations, documentData.id]);
 
   return <main className="annotation-wall document-wall">
-    <header className="wall-header"><div><p>{documentData.category}の統計表</p><h1>{documentData.title}</h1></div><div className="wall-status"><span>みんなの付箋 {marks.length}件</span><small>p.{pageNumbers}・タッチパネルとiPadから参加できます</small></div></header>
+    <header className="wall-header"><div><p>{documentData.category}の統計表</p><h1>{documentData.title}</h1></div><div className="wall-status"><span>みんなの付箋 {marks.length}件</span><small>p.{pageNumbers}・iPadから参加できます</small></div></header>
     <section className="document-wall-stage spread-stage"><div className={`book-spread ${rotation === 90 ? "rotated-90" : ""}`}>{documentData.pages.map((item) => <StatDocument key={item.id} page={item} marks={marks.filter((mark) => mark.pageId === item.id)} className="projection-document" />)}</div></section>
     <footer className="wall-footer"><p>統計表に重なる、みんなの付箋</p><div>{STAT_DOCUMENTS.map((item) => <span key={item.id} className={item.id === documentData.id ? "active" : ""} />)}</div></footer>
   </main>;
