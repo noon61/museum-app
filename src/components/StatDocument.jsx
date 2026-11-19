@@ -18,8 +18,24 @@ function combineReactionMarks(marks) {
   return [...regularMarks, ...groups];
 }
 
-export default function StatDocument({ page, marks = [], selectedPoint, onSelect, className = "" }) {
+function combineNearbyMarks(marks) {
+  const groups = [];
+  marks.forEach((mark) => {
+    const group = groups.find((item) => Math.abs(item.x - mark.x) <= 0.045 && Math.abs(item.y - mark.y) <= 0.045);
+    if (!group) {
+      groups.push({ id: `group-${mark.id}`, x: mark.x, y: mark.y, items: [mark] });
+      return;
+    }
+    group.x = (group.x * group.items.length + mark.x) / (group.items.length + 1);
+    group.y = (group.y * group.items.length + mark.y) / (group.items.length + 1);
+    group.items.push(mark);
+  });
+  return groups;
+}
+
+export default function StatDocument({ page, marks = [], selectedPoint, onSelect, onMarkSelect, compactMarks = false, className = "" }) {
   const displayMarks = combineReactionMarks(marks);
+  const nearbyMarkGroups = combineNearbyMarks(marks);
   const choosePosition = (event) => {
     if (!onSelect) return;
     const rect = event.currentTarget.getBoundingClientRect();
@@ -38,7 +54,22 @@ export default function StatDocument({ page, marks = [], selectedPoint, onSelect
     <div className={`stat-document ${onSelect ? "selectable" : ""} ${className}`} onClick={choosePosition}>
       <img src={page.image} alt={`${page.label} ${page.page}ページ`} draggable="false" />
       <div className="document-mark-layer">
-        {displayMarks.map((mark) => (
+        {compactMarks ? nearbyMarkGroups.map((group) => {
+          const reactions = group.items.filter((item) => item.inputType === "reaction");
+          const sameReaction = reactions.length === group.items.length && reactions.every((item) => item.reaction === reactions[0]?.reaction);
+          return <button
+            type="button"
+            key={group.id}
+            className="document-mark compact-document-mark"
+            aria-label={`${group.items.length}件の付箋を見る`}
+            style={{ left: `${group.x * 100}%`, top: `${group.y * 100}%`, "--mark-color": group.items[0]?.personaColor || "#ef6f73" }}
+            onClick={(event) => { event.stopPropagation(); onMarkSelect?.(group.items); }}
+          >
+            <i />
+            {sameReaction && <span className="compact-reaction-symbol">{reactions[0].reaction}</span>}
+            {group.items.length > 1 && <b className="compact-mark-count">{group.items.length}</b>}
+          </button>;
+        }) : displayMarks.map((mark) => (
           <div
             key={mark.id}
             className={`document-mark${mark.x > 0.7 ? " edge-right" : ""}${mark.y < 0.12 ? " edge-top" : ""}${mark.y > 0.82 ? " edge-bottom" : ""}`}

@@ -713,11 +713,12 @@ button {
   text-align: left;
   background: var(--museum-gray);
 }
-.wall-control > header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-.wall-control > header p { color: #4679ce; font-size: 11px; font-weight: 850; letter-spacing: 0.18em; }
-.wall-control > header h1 { margin: 3px 0 0; color: var(--museum-navy); font-size: clamp(28px, 4vw, 44px); }
-.wall-control > header > span { display: flex; align-items: center; gap: 9px; color: #69717d; font-size: 13px; }
-.wall-control > header i { width: 10px; height: 10px; border-radius: 50%; background: #46c78d; box-shadow: 0 0 0 5px rgba(70, 199, 141, 0.14); }
+.control-fixed-header { flex: none; }
+.control-fixed-header > header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.control-fixed-header > header p { color: #4679ce; font-size: 11px; font-weight: 850; letter-spacing: 0.18em; }
+.control-fixed-header > header h1 { margin: 3px 0 0; color: var(--museum-navy); font-size: clamp(28px, 4vw, 44px); }
+.control-fixed-header > header > span { display: flex; align-items: center; gap: 9px; color: #69717d; font-size: 13px; }
+.control-fixed-header > header i { width: 10px; height: 10px; border-radius: 50%; background: #46c78d; box-shadow: 0 0 0 5px rgba(70, 199, 141, 0.14); }
 .control-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
 .control-grid button { position: relative; display: grid; align-content: center; gap: 5px; min-height: 68px; padding: 9px 12px; border: 2px solid transparent; border-radius: 12px; color: #333a46; text-align: left; background: #fff; box-shadow: 0 6px 18px rgba(41, 46, 56, 0.08); }
 .control-grid button > span { color: #78808c; font-size: 11px; font-weight: 800; letter-spacing: 0.08em; }
@@ -770,6 +771,12 @@ button {
 .control-tools label { display: flex; align-items: center; gap: 8px; color: #747c88; font-size: 12px; }
 .control-tools input { width: 180px; accent-color: var(--museum-gold); }
 .control-tools button { padding: 9px 14px; border: 0; border-radius: 999px; color: #fff; background: var(--museum-navy); }
+.control-tools > button.active { background: var(--museum-gold); }
+.control-zoom-buttons { display: flex !important; grid-auto-flow: column; align-items: center; gap: 7px; margin: 0 !important; }
+.control-zoom-buttons button { display: grid; place-items: center; width: 40px; height: 40px; padding: 0; font-size: 21px; }
+.control-zoom-buttons button:disabled { opacity: .35; }
+.control-zoom-buttons span { min-width: 45px; color: #5f6875 !important; text-align: center; font-size: 11px !important; }
+.control-zoom-buttons button.zoom-reset { width: auto; padding: 0 14px; font-size: 12px; }
 .control-table-viewport { height: min(58vh, 700px); overflow: auto; background: #f6f5f2; }
 .control-table-viewport .stat-table { min-width: 760px; }
 .wall-control .control-grid { margin-top: 8px; }
@@ -912,6 +919,10 @@ button {
 .document-mark.edge-top > .reaction-mark-badge { top: 14px; }
 .document-mark.edge-bottom > .reaction-mark-badge { top: auto; bottom: 14px; transform: none; }
 .document-mark.selected > i { animation: mark-rings 550ms ease-out both; }
+.compact-document-mark { padding: 0; border: 0; pointer-events: auto; background: transparent; cursor: pointer; }
+.compact-document-mark > i { width: clamp(48px, 5.5vw, 94px); height: clamp(28px, 3.2vw, 58px); background: rgba(255,255,255,.18); }
+.compact-reaction-symbol { position: absolute; z-index: 5; top: 0; left: 0; color: #202731; font-size: clamp(17px, 2vw, 34px); font-weight: 900; line-height: 1; transform: translate(-50%, -50%); filter: drop-shadow(0 1px 0 #fff); }
+.compact-mark-count { position: absolute; z-index: 6; top: -32px; left: 22px; display: grid; place-items: center; min-width: 29px; height: 29px; padding: 0 7px; border: 3px solid #fff; border-radius: 999px; box-sizing: border-box; color: #fff; font-size: 13px; background: var(--museum-navy); box-shadow: 0 4px 10px rgba(30,36,45,.22); }
 .book-spread.rotated-90 .document-mark > i { transform: translate(-50%, -50%) rotate(-97deg); }
 .book-spread.rotated-90 .document-mark.selected > i { animation: mark-rings-counter-rotation 550ms ease-out both; }
 @keyframes mark-rings-counter-rotation {
@@ -921,11 +932,21 @@ button {
 .document-page-tabs { display: flex; gap: 10px; margin: 16px 0 0; }
 .document-page-tabs button { padding: 10px 16px; border: 1px solid #cfd3da; border-radius: 999px; color: #5e6672; background: #fff; }
 .document-page-tabs button.active { border-color: #477fd8; color: #fff; background: #477fd8; }
-.control-document-viewport { display: flex; align-items: center; justify-content: center; min-height: 0; overflow: hidden; padding: 10px; box-sizing: border-box; background: #d9d8d4; }
+.control-document-viewport { position: relative; display: flex; align-items: center; justify-content: center; min-height: 0; overflow: auto; padding: 10px; box-sizing: border-box; background: #d9d8d4; overscroll-behavior: contain; }
 .control-document-viewport > div { margin: 0 auto; box-shadow: 0 12px 32px rgba(29,32,37,.2); }
 .control-document-viewport > .control-fit-spread { width: auto; height: min(100%, 68vw); max-width: 100%; max-height: 100%; aspect-ratio: 2486 / 1803; }
 .control-document-viewport > .control-fit-spread.rotated-90 { width: min(55vh, 90vw); height: auto; max-height: none; aspect-ratio: 2486 / 1803; }
 .control-document-viewport > .csv-control-wrap { margin-left: 0; }
+.control-note-popover { position: absolute; z-index: 30; top: 50%; left: 50%; display: grid; gap: 14px; width: min(430px, calc(100% - 40px)); min-height: 210px; padding: 24px; border: 3px solid var(--museum-gold); border-radius: 24px; box-sizing: border-box; background: rgba(255,255,255,.96); box-shadow: 0 20px 60px rgba(29,34,43,.28); transform: translate(-50%, -50%); backdrop-filter: blur(5px); }
+.popover-close { position: absolute; top: 12px; right: 12px; padding: 7px 13px; border: 0; border-radius: 999px; color: #fff; background: var(--museum-navy); }
+.popover-content { display: grid; place-items: center; min-height: 145px; padding: 22px 12px 4px; }
+.popover-content p { color: #252c36; font-size: 21px; font-weight: 750; line-height: 1.55; text-align: center; }
+.popover-content svg { width: 100%; height: 150px; }
+.popover-reaction { color: var(--museum-navy); font-size: 82px; line-height: 1; }
+.popover-navigation { display: flex; align-items: center; justify-content: center; gap: 18px; }
+.popover-navigation button { width: 48px; height: 42px; border: 0; border-radius: 999px; color: #fff; font-size: 22px; background: var(--museum-navy); }
+.popover-navigation button:disabled { opacity: .3; }
+.popover-navigation span { min-width: 60px; color: #59616d; text-align: center; font-size: 14px; font-weight: 800; }
 .book-spread {
   position: relative;
   display: grid;
