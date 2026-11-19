@@ -5,11 +5,18 @@ import PressureCanvas from "../components/PressureCanvas";
 import { getPersona } from "../data/exhibition";
 import { getStatDocument } from "../data/statistics";
 
+const REACTIONS = [
+  { value: "!!", label: "驚いた" },
+  { value: "!?", label: "疑問" },
+  { value: "♥", label: "気になる" },
+  { value: "👍", label: "納得" },
+];
+
 export default function MarkPad() {
   const canvasRef = useRef(null);
   const lastTargetIdRef = useRef(null);
   const [selectedTarget, setSelectedTarget] = useState(null);
-  const [inputType, setInputType] = useState("handwriting");
+  const [inputType, setInputType] = useState("reaction");
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
@@ -25,14 +32,14 @@ export default function MarkPad() {
     }
   }, (error) => console.error("選択位置の受信エラー", error)), []);
 
-  const sendMark = async () => {
-    const hasContent = inputType === "keyboard" ? text.trim() : !canvasRef.current?.isEmpty();
+  const sendMark = async (reaction = "") => {
+    const hasContent = inputType === "reaction" ? Boolean(reaction) : inputType === "keyboard" ? text.trim() : !canvasRef.current?.isEmpty();
     if (!selectedTarget) {
       alert("タッチパネルで、付箋を置く場所を選んでください。");
       return;
     }
     if (!hasContent) {
-      alert(inputType === "keyboard" ? "文字を入力してください。" : "何か書いてください。");
+      alert(inputType === "keyboard" ? "文字を入力してください。" : inputType === "reaction" ? "リアクションを選んでください。" : "何か書いてください。");
       return;
     }
 
@@ -52,6 +59,7 @@ export default function MarkPad() {
         y: selectedTarget.y,
         text: inputType === "keyboard" ? text.trim() : "",
         strokes: inputType === "handwriting" ? canvasRef.current.exportStrokes() : [],
+        reaction: inputType === "reaction" ? reaction : "",
         personaId: persona.id,
         personaRole: persona.role,
         personaColor: persona.color,
@@ -81,9 +89,9 @@ export default function MarkPad() {
       <section className="ipad-input-card">
         {sent ? <div className="ipad-input-message"><strong>付箋を送りました</strong><button type="button" onClick={() => setSent(false)}>付箋を書きたい</button></div> : !selectedTarget ? <div className="ipad-input-message waiting"><strong>タッチパネルで<br />場所を選んでください</strong></div> : <div className="ipad-input-form">
           <p className="ipad-input-prompt">気づきを記入してください</p>
-          <div className="input-type-tabs"><button className={inputType === "handwriting" ? "active" : ""} onClick={() => setInputType("handwriting")}>手書き</button><button className={inputType === "keyboard" ? "active" : ""} onClick={() => setInputType("keyboard")}>キーボード</button></div>
-          {inputType === "handwriting" ? <div className="ipad-writing-canvas"><PressureCanvas ref={canvasRef} color="#28446E" onPressureChange={() => {}} /></div> : <textarea className="ipad-keyboard-input" value={text} maxLength={60} autoFocus aria-label="付箋の入力欄" placeholder="文字を入力してください" onChange={(event) => setText(event.target.value)} />}
-          <div className="ipad-input-actions"><button type="button" onClick={() => { canvasRef.current?.clearCanvas(); setText(""); }}>書き直す</button><button type="button" className="send" disabled={sending} onClick={sendMark}>{sending ? "送信中…" : "付箋を送る"}</button></div>
+          <div className="input-type-tabs"><button className={inputType === "reaction" ? "active" : ""} onClick={() => setInputType("reaction")}>リアクション</button><button className={inputType === "handwriting" ? "active" : ""} onClick={() => setInputType("handwriting")}>手書き</button><button className={inputType === "keyboard" ? "active" : ""} onClick={() => setInputType("keyboard")}>キーボード</button></div>
+          {inputType === "reaction" ? <div className="ipad-reaction-grid">{REACTIONS.map((item) => <button key={item.value} type="button" disabled={sending} aria-label={item.label} onClick={() => sendMark(item.value)}><strong>{item.value}</strong><span>{item.label}</span></button>)}</div> : inputType === "handwriting" ? <div className="ipad-writing-canvas"><PressureCanvas ref={canvasRef} color="#28446E" onPressureChange={() => {}} /></div> : <textarea className="ipad-keyboard-input" value={text} maxLength={60} autoFocus aria-label="付箋の入力欄" placeholder="文字を入力してください" onChange={(event) => setText(event.target.value)} />}
+          {inputType !== "reaction" && <div className="ipad-input-actions"><button type="button" onClick={() => { canvasRef.current?.clearCanvas(); setText(""); }}>書き直す</button><button type="button" className="send" disabled={sending} onClick={() => sendMark()}>{sending ? "送信中…" : "付箋を送る"}</button></div>}
         </div>}
       </section>
     </main>

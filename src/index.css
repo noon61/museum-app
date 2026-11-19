@@ -837,6 +837,12 @@ button {
   overscroll-behavior: none;
 }
 .ipad-keyboard-input { padding: 28px; color: var(--museum-black); font: inherit; font-size: 28px; resize: none; -webkit-user-select: text; user-select: text; -webkit-touch-callout: default; }
+.ipad-reaction-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; min-height: 0; align-content: center; }
+.ipad-reaction-grid button { display: grid; place-items: center; gap: 8px; min-height: 190px; border: 3px solid var(--museum-navy); border-radius: 24px; color: var(--museum-navy); background: #fffdf7; }
+.ipad-reaction-grid button:active { color: #fff; background: var(--museum-gold); transform: scale(.97); }
+.ipad-reaction-grid button:disabled { opacity: .45; }
+.ipad-reaction-grid strong { font-size: clamp(42px, 6vw, 76px); line-height: 1; }
+.ipad-reaction-grid span { font-size: 16px; font-weight: 750; }
 .ipad-input-actions { display: flex; justify-content: flex-end; gap: 14px; padding-top: 18px; }
 .ipad-input-actions button { min-height: 58px; padding: 0 30px; border: 0; border-radius: 999px; color: var(--museum-navy); font-weight: 750; background: var(--museum-gray); }
 .ipad-input-actions button.send { color: #fff; background: var(--museum-gold); }
@@ -899,6 +905,12 @@ button {
 .document-mark.edge-top > p { top: 12px; }
 .document-mark.edge-bottom > svg,
 .document-mark.edge-bottom > p { top: auto; bottom: 12px; }
+.reaction-mark-badge { position: absolute; z-index: 5; top: 0; left: clamp(28px, 3vw, 52px); display: flex; align-items: center; gap: 5px; min-width: 54px; min-height: 42px; padding: 4px 10px; border: 3px solid var(--mark-color); border-radius: 999px; box-sizing: border-box; color: #222a35; background: color-mix(in srgb, var(--mark-color) 32%, white); box-shadow: 0 5px 15px rgba(37,40,47,.16); transform: translateY(-50%); }
+.reaction-mark-badge b { font-size: clamp(20px, 2.2vw, 38px); line-height: 1; }
+.reaction-mark-badge em { display: grid; place-items: center; min-width: 28px; height: 28px; padding: 0 5px; border-radius: 999px; color: #fff; font-size: 15px; font-style: normal; font-weight: 850; background: var(--museum-navy); }
+.document-mark.edge-right > .reaction-mark-badge { right: clamp(28px, 3vw, 52px); left: auto; }
+.document-mark.edge-top > .reaction-mark-badge { top: 14px; }
+.document-mark.edge-bottom > .reaction-mark-badge { top: auto; bottom: 14px; transform: none; }
 .document-mark.selected > i { animation: mark-rings 550ms ease-out both; }
 .book-spread.rotated-90 .document-mark > i { transform: translate(-50%, -50%) rotate(-97deg); }
 .book-spread.rotated-90 .document-mark.selected > i { animation: mark-rings-counter-rotation 550ms ease-out both; }

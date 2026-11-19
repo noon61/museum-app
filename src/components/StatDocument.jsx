@@ -1,6 +1,25 @@
 import HandwritingSvg from "./HandwritingSvg";
 
+function combineReactionMarks(marks) {
+  const regularMarks = marks.filter((mark) => mark.inputType !== "reaction");
+  const groups = [];
+
+  marks.filter((mark) => mark.inputType === "reaction").forEach((mark) => {
+    const group = groups.find((item) => item.reaction === mark.reaction && Math.abs(item.x - mark.x) <= 0.045 && Math.abs(item.y - mark.y) <= 0.045);
+    if (!group) {
+      groups.push({ ...mark, count: 1 });
+      return;
+    }
+    group.x = (group.x * group.count + mark.x) / (group.count + 1);
+    group.y = (group.y * group.count + mark.y) / (group.count + 1);
+    group.count += 1;
+  });
+
+  return [...regularMarks, ...groups];
+}
+
 export default function StatDocument({ page, marks = [], selectedPoint, onSelect, className = "" }) {
+  const displayMarks = combineReactionMarks(marks);
   const choosePosition = (event) => {
     if (!onSelect) return;
     const rect = event.currentTarget.getBoundingClientRect();
@@ -19,14 +38,14 @@ export default function StatDocument({ page, marks = [], selectedPoint, onSelect
     <div className={`stat-document ${onSelect ? "selectable" : ""} ${className}`} onClick={choosePosition}>
       <img src={page.image} alt={`${page.label} ${page.page}ページ`} draggable="false" />
       <div className="document-mark-layer">
-        {marks.map((mark) => (
+        {displayMarks.map((mark) => (
           <div
             key={mark.id}
             className={`document-mark${mark.x > 0.7 ? " edge-right" : ""}${mark.y < 0.12 ? " edge-top" : ""}${mark.y > 0.82 ? " edge-bottom" : ""}`}
             style={{ left: `${mark.x * 100}%`, top: `${mark.y * 100}%`, "--mark-color": mark.personaColor || "#ef6f73" }}
           >
             <i />
-            {mark.inputType === "keyboard" ? <p>{mark.text}</p> : <HandwritingSvg strokes={mark.strokes} color={mark.personaColor} />}
+            {mark.inputType === "reaction" ? <span className="reaction-mark-badge"><b>{mark.reaction}</b>{mark.count > 1 && <em>{mark.count}</em>}</span> : mark.inputType === "keyboard" ? <p>{mark.text}</p> : <HandwritingSvg strokes={mark.strokes} color={mark.personaColor} />}
           </div>
         ))}
         {selectedPoint && (
